@@ -3,9 +3,10 @@ package kadesktopclient;
 import java.io.*;
 import java.net.*;
 
+//  kopottakha.cs.uiuc.edu:8080
 public class KADesktopClient {
-    String m_strServerDNS = "localhost";
-    int m_serverPort = 80;
+    String m_strServerDNS = "kopottakha.cs.uiuc.edu"; //"localhost";
+    int m_serverPort = 8080;
     
     Socket m_sock;
     DataOutputStream m_outToServer;
