@@ -1,4 +1,3 @@
-
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
@@ -58,10 +57,12 @@ public class NotificationGenerator {
     public void run() {
         Log("Experiment Started.");
 
-        long endTimeMS = System.currentTimeMillis() + _expDurationS * 1000;
+        long curTimeMS = System.currentTimeMillis();
+        long endTimeMS = curTimeMS + _expDurationS * 1000;
 
         while(true) {
-            long remainingTimeMS = (endTimeMS - System.currentTimeMillis());
+            curTimeMS = System.currentTimeMillis();
+            long remainingTimeMS = (endTimeMS - curTimeMS);
             if (remainingTimeMS <= 0) {
                 break;
             }
@@ -71,12 +72,13 @@ public class NotificationGenerator {
             // Wait this amount of sec before sending the next
             //
             double waitTimeS = -(3600.0 / _rateSum) * Math.log(_rng.nextDouble());
-            if (waitTimeS * 1000 + System.currentTimeMillis() > endTimeMS) {
+            if (waitTimeS * 1000 + curTimeMS > endTimeMS) {
                 Log("Next waiting time (" + Math.round(waitTimeS/60.0) + " minute(s)) is longer than remaining time.");
                 break;
             }
 
             Log("Waiting " + Math.round(waitTimeS/60.0) + " minute(s) before sending next notificatoin.");
+
             try {
                 Thread.sleep((int) waitTimeS * 1000);
             } catch (InterruptedException e) {
@@ -95,6 +97,11 @@ public class NotificationGenerator {
         }
 
         Log("Experiment Ended.");
+
+        for (NotificationInfo info : _rgNotification)
+        {
+            System.out.println(info._strAppName + " (" + info._sendCompletedCount + ")");
+        }
     }
 
     private int whichone() {
@@ -144,6 +151,7 @@ public class NotificationGenerator {
     public static void main(String[] args) throws Exception {
         String strDeviceToken = "";
         int expDurationS = 24 * 60 * 60;
+        NotificationGenerator notGen;
 
         if (args.length == 0)
         {
