@@ -28,7 +28,7 @@ public class JavaApplication1 {
         message.put("priority", priority);
 
         JSONObject data = new JSONObject();
-        data.put("AppName", type);
+        data.put("Category", type);
         data.put("NotificationId", notificationId);
 
         message.put("data", data);
@@ -46,19 +46,18 @@ public class JavaApplication1 {
         return false;
     }
     public static void main(String[] args) throws JSONException, IOException, FileNotFoundException {
-        String strType = "WhatsApp";
+        String strDevice = "SAIFUR";
+        String strType = "Messenger";
         String strPriority = "normal";
 
         int notificationId = 0;
 
        if (args.length >= 1)
-           strType = args[0];
+           strDevice = args[0];
        if (args.length >= 2)
-           strPriority = args[1];
-       if (args.length >= 3)
-           notificationId = Integer.parseInt(args[2]);
-            
-        String strDeviceToken = getDeviceToken("SAIFUR");
+           strType = args[1];
+
+        String strDeviceToken = getDeviceToken(strDevice);
         notificationsender("AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ", strDeviceToken, strType, strPriority, notificationId);
     }
 
