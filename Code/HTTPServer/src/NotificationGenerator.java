@@ -1,5 +1,4 @@
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -20,16 +19,10 @@ public class NotificationGenerator {
     // Note: As needed, add more notification types below
     //
     NotificationInfo _rgNotification[] = {
-        new NotificationInfo("WhatsApp", "high", 19.9),
-        new NotificationInfo("Gmail", "normal", 7.0),
-        new NotificationInfo("SMS/MMS", "normal", 4.2),
-        new NotificationInfo("Facebook", "high", 3.7),
-        new NotificationInfo("Facebook Messanger", "high", 3.4),
-        new NotificationInfo("Email", "normal", 1.7),
-        new NotificationInfo("Google Calendar", "high", 1.6),
-        new NotificationInfo("To-Do List", "high", 1.5),
-        new NotificationInfo("Google Plus", "high", 1.0),
-        new NotificationInfo("Calendar", "high", 0.9)
+        new NotificationInfo("Messenger", "high", 27.5),
+        new NotificationInfo("Mail", "normal", 8.7),
+        new NotificationInfo("Social", "normal", 4.7),
+        new NotificationInfo("Calendar", "high", 4.0) // TODO: Review --> These notifications are mostly locally generated.
     };
 
     Random _rng;
@@ -100,7 +93,7 @@ public class NotificationGenerator {
 
         for (NotificationInfo info : _rgNotification)
         {
-            System.out.println(info._strAppName + " (" + info._sendCompletedCount + ")");
+            System.out.println(info._strCategory + " (" + info._sendCompletedCount + ")");
         }
     }
 
@@ -126,7 +119,7 @@ public class NotificationGenerator {
         message.put("priority", _rgNotification[appId]._strPriority);
 
         JSONObject data = new JSONObject();
-        data.put("AppName", _rgNotification[appId]._strAppName);
+        data.put("Category", _rgNotification[appId]._strCategory);
         data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount);
 
         message.put("data", data);
@@ -138,7 +131,7 @@ public class NotificationGenerator {
         //
         _rgNotification[appId]._sendAttemptedCount++;
 
-        Log("Sending notification> AppName: " + _rgNotification[appId]._strAppName + " NotificationId: " + _rgNotification[appId]._sendAttemptedCount);
+        Log("Sending notification> Category: " + _rgNotification[appId]._strCategory + " NotificationId: " + _rgNotification[appId]._sendAttemptedCount);
         HttpResponse response = client.execute(post);
         Log(response.getStatusLine());
 
@@ -150,12 +143,12 @@ public class NotificationGenerator {
 
     public static void main(String[] args) throws Exception {
         String strDeviceToken = "";
-        int expDurationS = 24 * 60 * 60;
+        int expDurationS;
         NotificationGenerator notGen;
 
-        if (args.length == 0)
+        if (args.length < 2)
         {
-            System.out.println("Usage: java NotificationGenerator <DeviceName>.");
+            System.out.println("Usage: java NotificationGenerator <DeviceName> <Duration_hours>");
             return;
         }
 
@@ -165,6 +158,13 @@ public class NotificationGenerator {
         catch (FileNotFoundException e)
         {
             Log(e);
+        }
+
+        expDurationS = Integer.parseInt(args[1]) * 60 * 60;
+        if (strDeviceToken.isEmpty() || expDurationS <= 0)
+        {
+            Log("No device token found and/or incorrect experiment duration specified.");
+            return;
         }
 
         new NotificationGenerator(strDeviceToken, expDurationS).run();
@@ -208,16 +208,16 @@ public class NotificationGenerator {
 
 class NotificationInfo
 {
-    public String _strAppName;
+    public String _strCategory;
     public String _strPriority;
     public double _dailyRate;
     public double _probability;
     public int _sendAttemptedCount;
     public int _sendCompletedCount;
 
-    NotificationInfo(String strAppName, String strPriority, double dailyRate)
+    NotificationInfo(String strCategory, String strPriority, double dailyRate)
     {
-        _strAppName = strAppName;
+        _strCategory = strCategory;
         _strPriority = strPriority;
         _dailyRate = dailyRate;
         _probability = 0.0;
