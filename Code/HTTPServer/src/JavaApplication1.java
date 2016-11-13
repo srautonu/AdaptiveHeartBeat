@@ -57,6 +57,8 @@ public class JavaApplication1 {
        if (args.length >= 2)
            strType = args[1];
 
+        System.out.println("Device: " + strDevice + " AppCategory: " + strType);
+
         String strDeviceToken = getDeviceToken(strDevice);
         notificationsender("AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ", strDeviceToken, strType, strPriority, notificationId);
     }

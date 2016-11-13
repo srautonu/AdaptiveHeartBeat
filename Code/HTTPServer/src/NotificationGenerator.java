@@ -33,7 +33,7 @@ public class NotificationGenerator {
     public NotificationGenerator(String deviceToken, int expDurationS) {
         _deviceToken = deviceToken;
         _expDurationS = expDurationS;
-        _rng = new Random(50);
+        _rng = new Random(System.currentTimeMillis());
         _rateSum = 0.0;
 
         for (int i = 0; i < _rgNotification.length; i++) {
