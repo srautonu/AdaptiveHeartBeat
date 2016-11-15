@@ -120,7 +120,7 @@ public class NotificationGenerator {
 
         JSONObject data = new JSONObject();
         data.put("Category", _rgNotification[appId]._strCategory);
-        data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount);
+        data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount++);
 
         message.put("data", data);
         message.put("time_to_live", 0);
@@ -129,8 +129,6 @@ public class NotificationGenerator {
         //
         // Start the HTTP call
         //
-        _rgNotification[appId]._sendAttemptedCount++;
-
         Log("Sending notification> Category: " + _rgNotification[appId]._strCategory + " NotificationId: " + _rgNotification[appId]._sendAttemptedCount);
         HttpResponse response = client.execute(post);
         Log(response.getStatusLine());
