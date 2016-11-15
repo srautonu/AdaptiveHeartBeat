@@ -150,7 +150,7 @@ public class KADesktopClient {
         //IKAIntervalTester tester = new KANoTest();
         KADesktopClient client = new KADesktopClient();
             
-        (new Thread(new DataConnection(strServer, port, tester))).start();
+        //(new Thread(new DataConnection(strServer, port, tester))).start();
         client.Start(strServer, port, tester);
     }    
 }

@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class JavaApplication1 {
     public static boolean notificationsender(String key, String deviceToken, String type,String priority, int notificationId) throws JSONException, IOException{
@@ -32,15 +34,18 @@ public class JavaApplication1 {
         data.put("NotificationId", notificationId);
 
         message.put("data", data);
-        message.put("time_to_live", 60);
+        message.put("time_to_live", 0);
         post.setEntity(new StringEntity(message.toString(), "UTF-8"));
 
+        Log("Sending notification...");
         HttpResponse response = client.execute(post);
-        System.out.println(response.getStatusLine());
-
         if (200 == response.getStatusLine().getStatusCode())
         {
-            System.out.println("Notification sent successfully.");
+            Log("Notification sent successfully.");
+        }
+        else
+        {
+            Log("FAILED - " + response.getStatusLine().toString());
         }
         
         return false;
@@ -82,5 +87,21 @@ public class JavaApplication1 {
 
         return strDeviceToken;
     }
+
+    private static void Log(Object objToLog)
+    {
+        //
+        // Prepare the timestamp.
+        //
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
+        String formattedDate = sdf.format(date);
+
+        //
+        // Log the time-stamped spew
+        //
+        System.out.println(formattedDate + " - " + objToLog);
+    }
+
 
 }

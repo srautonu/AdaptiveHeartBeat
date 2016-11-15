@@ -123,7 +123,7 @@ public class NotificationGenerator {
         data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount);
 
         message.put("data", data);
-        message.put("time_to_live", 60);
+        message.put("time_to_live", 0);
         post.setEntity(new StringEntity(message.toString(), "UTF-8"));
 
         //
