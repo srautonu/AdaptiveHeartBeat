@@ -86,7 +86,7 @@ class ReadHandler implements Runnable
 
         String[] strTokens = strMessage.split(" ");
 
-        int index = strTokens[0].length() + strTokens[1].length() + 1;
+        int index = strTokens[0].length() + strTokens[1].length() + 2;
         _notifMgr.queueMessage(strTokens[1], "NTFN " + strMessage.substring(index));
  
         DataOutputStream out = new DataOutputStream(_sock.getOutputStream());
