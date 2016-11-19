@@ -1,7 +1,5 @@
 package notificationserver;
 
-import sun.rmi.runtime.Log;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -30,8 +28,8 @@ public class NotificationManager implements Runnable {
 
     NotificationManager()
     {
-        _msgQueue = new ArrayBlockingQueue(100);
-        _connectionTable = new Hashtable();
+        _msgQueue = new ArrayBlockingQueue<Message>(100);
+        _connectionTable = new Hashtable<String, Socket>();
 
         _thread = new Thread(this);
         _thread.start();
