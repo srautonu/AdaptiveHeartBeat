@@ -1,9 +1,9 @@
-HTTPServer/.idea/workspace.xml
-HTTPServer/.idea/uiDesigner.xml
-HTTPServer/out/
-HTTPServer/src/*.class
+code/.idea/workspace.xml
+code/.idea/uiDesigner.xml
+code/out/
+code/src/*.class
 
-NotificationGenerator/.idea/workspace.xml
-NotificationGenerator/.idea/uiDesigner.xml
-NotificationGenerator/out/
-NotificationGenerator/src/*.class
+code/NotificationGenerator/.idea/workspace.xml
+code/NotificationGenerator/.idea/uiDesigner.xml
+code/NotificationGenerator/out/
+code/NotificationGenerator/src/*.class

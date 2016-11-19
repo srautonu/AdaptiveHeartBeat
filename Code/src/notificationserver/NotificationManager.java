@@ -43,7 +43,7 @@ public class NotificationManager implements Runnable {
         {
             try {
                 msg = _msgQueue.take();
-                Log("Found message: " + msg._strRecipientToken + " " + msg._strBody);
+                Log("Found message: @<" + msg._strRecipientToken + "> " + msg._strBody);
                 sock = _connectionTable.get(msg._strRecipientToken);
                 if (sock != null && !sock.isClosed())
                 {
