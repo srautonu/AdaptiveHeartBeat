@@ -161,9 +161,9 @@ public class NotificationGenerator {
     private void sendNotification2(int appId) {
         _rgNotification[appId]._sendAttemptedCount++;
         boolean fSuccess = Utilities.sendNotification2(
-                                "localhost",
+                                _strServer,
                                 5229,
-                _strDeviceToken,
+                                _strDeviceToken,
                                 _rgNotification[appId]._strCategory,
                                 _rgNotification[appId]._sendAttemptedCount
                                 );
