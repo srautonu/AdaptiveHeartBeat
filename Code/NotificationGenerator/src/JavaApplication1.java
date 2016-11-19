@@ -50,6 +50,32 @@ public class JavaApplication1 {
         
         return false;
     }
+
+    public static void notificationsender2(
+        String deviceToken,
+        String category,
+        int notificationId
+        )
+    {
+        Log("Sending notification...");
+
+        boolean fSuccess = Utilities.sendNotification2(
+                            "localhost",
+                            5229,
+                            deviceToken,
+                            category,
+                            notificationId
+                            );
+        if (fSuccess)
+        {
+            Log("Notification sent successfully.");
+        }
+        else
+        {
+            Log("FAILED.");
+        }
+    }
+
     public static void main(String[] args) throws JSONException, IOException, FileNotFoundException {
         String strDevice = "SAIFUR";
         String strType = "Messenger";
@@ -65,7 +91,8 @@ public class JavaApplication1 {
         System.out.println("Device: " + strDevice + " AppCategory: " + strType);
 
         String strDeviceToken = getDeviceToken(strDevice);
-        notificationsender("AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ", strDeviceToken, strType, strPriority, notificationId);
+        //notificationsender("AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ", strDeviceToken, strType, strPriority, notificationId);
+        notificationsender2(strDeviceToken, strType, notificationId);
     }
 
     private static String getDeviceToken(String strDevice) throws FileNotFoundException

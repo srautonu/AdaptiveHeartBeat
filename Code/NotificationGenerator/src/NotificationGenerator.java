@@ -6,9 +6,8 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -139,6 +138,26 @@ public class NotificationGenerator {
         }
     }
 
+    private void sendNotification2(int appId) {
+        _rgNotification[appId]._sendAttemptedCount++;
+        boolean fSuccess = Utilities.sendNotification2(
+                                "localhost",
+                                5229,
+                                _deviceToken,
+                                _rgNotification[appId]._strCategory,
+                                _rgNotification[appId]._sendAttemptedCount
+                                );
+        if (fSuccess)
+        {
+            _rgNotification[appId]._sendCompletedCount++;
+            Log("Successful.");
+        }
+        else
+        {
+            Log("FAILED.");
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         String strDeviceToken = "";
         int expDurationS;
@@ -190,17 +209,7 @@ public class NotificationGenerator {
 
     private static void Log(Object objToLog)
     {
-        //
-        // Prepare the timestamp.
-        //
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
-        String formattedDate = sdf.format(date);
-
-        //
-        // Log the time-stamped spew
-        //
-        System.out.println(formattedDate + " - " + objToLog);
+        Utilities.Log(objToLog);
     }
 }
 
