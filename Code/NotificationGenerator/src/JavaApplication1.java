@@ -96,7 +96,7 @@ public class JavaApplication1 {
         if (args.length >= 3)
             strServer = args[2];
 
-        System.out.println("Server: " + strServer + "Device: " + strDevice + " AppCategory: " + strType);
+        System.out.println("Server: " + strServer + " Device: " + strDevice + " AppCategory: " + strType);
 
         String strDeviceToken = Utilities.getDeviceToken(strDevice);
         //notificationsender("AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ", strDeviceToken, strType, strPriority, notificationId);

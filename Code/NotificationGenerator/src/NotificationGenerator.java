@@ -233,6 +233,8 @@ public class NotificationGenerator {
         if (args.length >= 3)
             strServer = args[2];
 
+        System.out.println("Server: " + strServer + " Device: " + args[0]);
+
         new NotificationGenerator(strServer, strDeviceToken, expDurationS).run();
     }
 
