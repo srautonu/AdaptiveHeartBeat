@@ -54,17 +54,17 @@ public class JavaApplication1 {
     public static void notificationsender2(
         String deviceToken,
         String category,
-        int notificationId
+        String server
         )
     {
         Log("Sending notification...");
 
         boolean fSuccess = Utilities.sendNotification2(
-                            "localhost",
+                            server,
                             5229,
                             deviceToken,
                             category,
-                            notificationId
+                            0
                             );
         if (fSuccess)
         {
@@ -76,59 +76,30 @@ public class JavaApplication1 {
         }
     }
 
+    private static void Log(Object objToLog)
+    {
+        Utilities.Log(objToLog);
+    }
+
     public static void main(String[] args) throws JSONException, IOException, FileNotFoundException {
         String strDevice = "SAIFUR";
         String strType = "Messenger";
         String strPriority = "normal";
+        String strServer = "www.ekngine.com";
 
-        int notificationId = 0;
+        //int notificationId = 0;
 
-       if (args.length >= 1)
-           strDevice = args[0];
-       if (args.length >= 2)
-           strType = args[1];
+        if (args.length >= 1)
+            strDevice = args[0];
+        if (args.length >= 2)
+            strType = args[1];
+        if (args.length >= 3)
+            strServer = args[2];
 
-        System.out.println("Device: " + strDevice + " AppCategory: " + strType);
+        System.out.println("Server: " + strServer + "Device: " + strDevice + " AppCategory: " + strType);
 
-        String strDeviceToken = getDeviceToken(strDevice);
+        String strDeviceToken = Utilities.getDeviceToken(strDevice);
         //notificationsender("AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ", strDeviceToken, strType, strPriority, notificationId);
-        notificationsender2(strDeviceToken, strType, notificationId);
+        notificationsender2(strDeviceToken, strType, strServer);
     }
-
-    private static String getDeviceToken(String strDevice) throws FileNotFoundException
-    {
-        String strLine;
-        String strDeviceToken = "";
-        String[] strTokens;
-
-        Scanner scanner = new Scanner(new FileInputStream("DeviceInfo.txt"));
-        while (scanner.hasNextLine()) {
-            strLine = scanner.nextLine();
-            strTokens = strLine.split(" ");
-            if (strTokens[0].equalsIgnoreCase(strDevice))
-            {
-                strDeviceToken = strTokens[1];
-                break;
-            }
-        }
-
-        return strDeviceToken;
-    }
-
-    private static void Log(Object objToLog)
-    {
-        //
-        // Prepare the timestamp.
-        //
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm:ss a");
-        String formattedDate = sdf.format(date);
-
-        //
-        // Log the time-stamped spew
-        //
-        System.out.println(formattedDate + " - " + objToLog);
-    }
-
-
 }

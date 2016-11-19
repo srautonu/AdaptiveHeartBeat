@@ -16,40 +16,6 @@ import java.util.Scanner;
  * Created by mrahman on 18-Nov-16.
  */
 public class Utilities {
-    private boolean sendNotification(
-        String strRecipientToken,
-        String strCategory,
-        String strPriority,
-        int notificationId
-        ) throws JSONException, IOException
-    {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
-        post.setHeader("Content-type", "application/json");
-        post.setHeader("Authorization", "key=AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ");
-
-        JSONObject message = new JSONObject();
-        message.put("to", strRecipientToken);
-        message.put("priority", strPriority);
-
-        JSONObject data = new JSONObject();
-        data.put("Category", strCategory);
-        data.put("NotificationId", notificationId);
-
-        message.put("data", data);
-        message.put("time_to_live", 0);
-        post.setEntity(new StringEntity(message.toString(), "UTF-8"));
-
-        //
-        // Start the HTTP call
-        //
-        Log("Sending notification> Category: " + strCategory + " NotificationId: " + notificationId);
-        HttpResponse response = client.execute(post);
-        Log(response.getStatusLine());
-
-        return (200 == response.getStatusLine().getStatusCode());
-    }
-
     //
     // Return true means notification was sent to server successfully
     //
@@ -100,7 +66,7 @@ public class Utilities {
         return fRet;
     }
 
-    private static String getDeviceToken(String strDevice) throws FileNotFoundException
+    static String getDeviceToken(String strDevice) throws FileNotFoundException
     {
         String strLine;
         String strDeviceToken = "";
