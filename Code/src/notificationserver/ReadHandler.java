@@ -33,7 +33,7 @@ class ReadHandler implements Runnable
 
         try
         {
-            while(true)
+            while(IsChannelOpen())
             {
                 strMessage = _input.readLine();
                 if (strMessage == null)
@@ -112,6 +112,12 @@ class ReadHandler implements Runnable
             CloseChannel();
         }
     }
+
+    private boolean IsChannelOpen()
+    {
+        return (_sock != null && !_sock.isClosed());
+    }
+
 
     private void CloseChannel()
     {
