@@ -1,22 +1,7 @@
 package notificationserver;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.*;
-import java.util.HashMap;
-import java.util.concurrent.ArrayBlockingQueue;
-
-/*
-Protocol:
-
-client connects. Then:
-CLIENT> DEVICE_NAME DURATION_HOURS
-SERVER> DEVICE_NAME DURATION_HOURS OK
-
-THEN SERVER SENDS NOTIFICATIONS FOLLOWING A MODEL. THE FORMAT OF MESSAGE IS:
-SERVER> NTFN <TYPE> <COUNTER>\n
-
-*/
 
 class ReadHandler implements Runnable
 {
@@ -82,16 +67,26 @@ class ReadHandler implements Runnable
 
     private void processNOTG(String strMessage) throws IOException
     {
-        //NOTG <DEVICE_TOKEN> <Category> <NotificationId>
+        //NOTG <DEVICE_NAME> <Category> <NotificationId>
 
         String[] strTokens = strMessage.split(" ");
+        String strRecipient = strTokens[1];
+        String strResponse = "";
 
-        int index = strTokens[0].length() + strTokens[1].length() + 1;
-        _notifMgr.queueMessage(strTokens[1], "NTFN " + strMessage.substring(index));
- 
+        if (strRecipient.isEmpty())
+        {
+            strResponse = "NOTG ERROR";
+        }
+        else
+        {
+            int index = strTokens[0].length() + strTokens[1].length() + 1;
+            _notifMgr.queueMessage(strTokens[1], "NTFN " + strMessage.substring(index));
+            strResponse = "NOTG OK";
+        }
+
         DataOutputStream out = new DataOutputStream(_sock.getOutputStream());
-        out.writeBytes("NOTG OK\n");
-        Log("sent@" + _sock.getPort() + "> NOTG OK");
+        out.writeBytes(strResponse + "\n");
+        Log("sent@" + _sock.getPort() + "> " + strResponse);
     }
 
     private void processCLNT(String strMessage)
@@ -100,16 +95,27 @@ class ReadHandler implements Runnable
 
         String[] strTokens = strMessage.split(" ");
 
-        _strClient = strTokens[1];
-        _notifMgr.addConnection(_strClient, _sock);
-        _notifMgr.queueMessage(_strClient, "CLNT OK");
+        _strClient = Utilities.getClientName(strTokens[1]);
+        if (!_strClient.isEmpty()) {
+            Log("Found client@" + _sock.getPort() + ": " + _strClient);
+            _notifMgr.addConnection(_strClient, _sock);
+            _notifMgr.queueMessage(_strClient, "CLNT OK");
+        }
+        else
+        {
+            //
+            // If we find an unknown client, we close the socket.
+            //
+            Log("Unknown client@" + _sock.getPort() + ": Closing connection...");
+            CloseChannel();
+        }
     }
 
     private void CloseChannel()
     {
         if (null != _sock)
         {
-            Log("Closing socket @ port " + _sock.getPort() + "...");
+            Log("Closing socket @" + _sock.getPort() + "...");
             try
             {
                 _sock.close();
@@ -119,7 +125,7 @@ class ReadHandler implements Runnable
                 if (!_strClient.isEmpty())
                     _notifMgr.removeConnection(_strClient);
 
-                Log("Done.");
+                Log("Socket @" + _sock.getPort() + " closed.");
             }
             catch(IOException e)
             {
@@ -128,5 +134,8 @@ class ReadHandler implements Runnable
         }
     }
     
-    private void Log(Object objToLog) { Logger.Log(objToLog); }
+    private void Log(Object objToLog)
+    {
+        Logger.Log(objToLog);
+    }
 }

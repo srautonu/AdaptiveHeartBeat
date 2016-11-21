@@ -56,7 +56,7 @@ public class Utilities {
     static boolean sendNotification2(
         String strServer,
         int port,
-        String strRecipientToken,
+        String strRecipientDevice,
         String strCategory,
         int notificationId
         )
@@ -64,7 +64,7 @@ public class Utilities {
         Socket sock = null;
         boolean fRet = false;
 
-        String strMessage = "NOTG " + strRecipientToken + " " + strCategory + " " + notificationId;
+        String strMessage = "NOTG " + strRecipientDevice + " " + strCategory + " " + notificationId;
 
         //
         // Start the TCP call

@@ -5,30 +5,25 @@ package notificationserver;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /*
 Protocol:
 
 client connects. Then:
-CLIENT> TOKN <DEVICE_TOKEN>
-SERVER> TOKN OK
+CLIENT> CLNT <DEVICE_TOKEN>
+SERVER> CLNT OK
 
 For notification generator connections to the server:
-CLIENT> DEVN <DEVICE_NAME>
-SERVER> DEVN <DEVICE_NAME> OK
-CLIENT> NTFN <TYPE> <COUNTER>
-SERVER> NTFN <TYPE> <COUNTER> OK
+CLINET> NOTG <DEVICE_TOKEN> <Category> <NotificationId>
+SERVER> NOTG OK
 
-THEN SERVER SENDS NOTIFICATIONS FOLLOWING A MODEL. THE FORMAT OF MESSAGE IS:
-SERVER> NTFN <TYPE> <COUNTER>\n
+NOTIFICATION SENT FROM SERVER TO CLIENT:
+SERVER> NTFN <TYPE> <COUNTER>
 
 Note that PING messages can be received asynchronously. That is why the
 reading happens in a separate thread
 
 */
-
 
 public class NotificationServer {
     NotificationManager notifMgr = new NotificationManager();

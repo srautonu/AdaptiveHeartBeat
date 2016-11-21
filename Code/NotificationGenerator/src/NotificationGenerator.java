@@ -7,9 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -26,11 +23,11 @@ public class NotificationGenerator {
 
     Random _rng;
     double _rateSum;
-    String _deviceToken;
+    String _deviceId;
     int _expDurationS;
 
     public NotificationGenerator(String deviceToken, int expDurationS) {
-        _deviceToken = deviceToken;
+        _deviceId = deviceToken;
         _expDurationS = expDurationS;
         _rng = new Random(System.currentTimeMillis());
         _rateSum = 0.0;
@@ -114,7 +111,7 @@ public class NotificationGenerator {
         post.setHeader("Authorization", "key=AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ");
 
         JSONObject message = new JSONObject();
-        message.put("to", _deviceToken);
+        message.put("to", _deviceId);
         message.put("priority", _rgNotification[appId]._strPriority);
 
         JSONObject data = new JSONObject();
@@ -143,7 +140,7 @@ public class NotificationGenerator {
         boolean fSuccess = Utilities.sendNotification2(
                                 "localhost",
                                 5229,
-                                _deviceToken,
+                _deviceId,
                                 _rgNotification[appId]._strCategory,
                                 _rgNotification[appId]._sendAttemptedCount
                                 );

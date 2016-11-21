@@ -43,16 +43,16 @@ public class NotificationManager implements Runnable {
         {
             try {
                 msg = _msgQueue.take();
-                Log("Found message: @<" + msg._strRecipientToken + "> " + msg._strBody);
                 sock = _connectionTable.get(msg._strRecipientToken);
                 if (sock != null && !sock.isClosed())
                 {
                     DataOutputStream out = new DataOutputStream(sock.getOutputStream());
                     out.writeBytes(msg._strBody + "\n");
+                    Log("sent@" + sock.getPort() + ">" + msg._strBody);
                 }
                 else
                 {
-                    Log("No connection available to " + msg._strRecipientToken);
+                    Log("Notification dropped!! No connection available to " + msg._strRecipientToken);
                 }
             }
             catch (InterruptedException e) {
