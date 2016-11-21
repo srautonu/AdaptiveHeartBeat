@@ -48,7 +48,7 @@ public class NotificationManager implements Runnable {
                 {
                     DataOutputStream out = new DataOutputStream(sock.getOutputStream());
                     out.writeBytes(msg._strBody + "\n");
-                    Log("sent@" + sock.getPort() + ">" + msg._strBody);
+                    Log("sent@" + sock.getPort() + "> " + msg._strBody);
                 }
                 else
                 {

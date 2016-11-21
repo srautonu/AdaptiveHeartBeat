@@ -10,6 +10,26 @@ import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
 
+class NotificationInfo
+{
+    public String _strCategory;
+    public String _strPriority;
+    public double _dailyRate;
+    public double _probability;
+    public int _sendAttemptedCount;
+    public int _sendCompletedCount;
+
+    NotificationInfo(String strCategory, String strPriority, double dailyRate)
+    {
+        _strCategory = strCategory;
+        _strPriority = strPriority;
+        _dailyRate = dailyRate;
+        _probability = 0.0;
+        _sendAttemptedCount = 0;
+        _sendCompletedCount = 0;
+    }
+}
+
 public class NotificationGenerator {
     //
     // Note: As needed, add more notification types below
@@ -23,11 +43,13 @@ public class NotificationGenerator {
 
     Random _rng;
     double _rateSum;
-    String _deviceId;
+    String _strDeviceId;
+    String _strServer;
     int _expDurationS;
 
-    public NotificationGenerator(String deviceToken, int expDurationS) {
-        _deviceId = deviceToken;
+    public NotificationGenerator(String strServer, String strDeviceId, int expDurationS) {
+        _strServer = strServer;
+        _strDeviceId = strDeviceId;
         _expDurationS = expDurationS;
         _rng = new Random(System.currentTimeMillis());
         _rateSum = 0.0;
@@ -76,13 +98,14 @@ public class NotificationGenerator {
 
             // Choose the notification type and send
             int app = whichone();
-            try {
-                sendNotification(app);
-            } catch (JSONException e) {
-                Log(e);
-            } catch (IOException e) {
-                Log(e);
-            }
+            sendNotification2(app);
+//            try {
+//                sendNotification(app);
+//            } catch (JSONException e) {
+//                Log(e);
+//            } catch (IOException e) {
+//                Log(e);
+//            }
         }
 
         Log("Experiment Ended.");
@@ -104,43 +127,43 @@ public class NotificationGenerator {
         return -1; // Invalid ! This should never happen
     }
 
-    private void sendNotification(int appId) throws JSONException, IOException {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
-        post.setHeader("Content-type", "application/json");
-        post.setHeader("Authorization", "key=AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ");
-
-        JSONObject message = new JSONObject();
-        message.put("to", _deviceId);
-        message.put("priority", _rgNotification[appId]._strPriority);
-
-        JSONObject data = new JSONObject();
-        data.put("Category", _rgNotification[appId]._strCategory);
-        data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount++);
-
-        message.put("data", data);
-        message.put("time_to_live", 0);
-        post.setEntity(new StringEntity(message.toString(), "UTF-8"));
-
-        //
-        // Start the HTTP call
-        //
-        Log("Sending notification> Category: " + _rgNotification[appId]._strCategory + " NotificationId: " + _rgNotification[appId]._sendAttemptedCount);
-        HttpResponse response = client.execute(post);
-        Log(response.getStatusLine());
-
-        if (200 == response.getStatusLine().getStatusCode())
-        {
-            _rgNotification[appId]._sendCompletedCount++;
-        }
-    }
+//    private void sendNotification(int appId) throws JSONException, IOException {
+//        HttpClient client = HttpClientBuilder.create().build();
+//        HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
+//        post.setHeader("Content-type", "application/json");
+//        post.setHeader("Authorization", "key=AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ");
+//
+//        JSONObject message = new JSONObject();
+//        message.put("to", _strDeviceToken);
+//        message.put("priority", _rgNotification[appId]._strPriority);
+//
+//        JSONObject data = new JSONObject();
+//        data.put("Category", _rgNotification[appId]._strCategory);
+//        data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount++);
+//
+//        message.put("data", data);
+//        message.put("time_to_live", 0);
+//        post.setEntity(new StringEntity(message.toString(), "UTF-8"));
+//
+//        //
+//        // Start the HTTP call
+//        //
+//        Log("Sending notification> Category: " + _rgNotification[appId]._strCategory + " NotificationId: " + _rgNotification[appId]._sendAttemptedCount);
+//        HttpResponse response = client.execute(post);
+//        Log(response.getStatusLine());
+//
+//        if (200 == response.getStatusLine().getStatusCode())
+//        {
+//            _rgNotification[appId]._sendCompletedCount++;
+//        }
+//    }
 
     private void sendNotification2(int appId) {
         _rgNotification[appId]._sendAttemptedCount++;
         boolean fSuccess = Utilities.sendNotification2(
-                                "localhost",
+                                _strServer,
                                 5229,
-                _deviceId,
+                                _strDeviceId,
                                 _rgNotification[appId]._strCategory,
                                 _rgNotification[appId]._sendAttemptedCount
                                 );
@@ -153,35 +176,6 @@ public class NotificationGenerator {
         {
             Log("FAILED.");
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        String strDeviceToken = "";
-        int expDurationS;
-        NotificationGenerator notGen;
-
-        if (args.length < 2)
-        {
-            System.out.println("Usage: java NotificationGenerator <DeviceName> <Duration_hours>");
-            return;
-        }
-
-        try {
-            strDeviceToken = getDeviceToken(args[0]);
-        }
-        catch (FileNotFoundException e)
-        {
-            Log(e);
-        }
-
-        expDurationS = Integer.parseInt(args[1]) * 60 * 60;
-        if (strDeviceToken.isEmpty() || expDurationS <= 0)
-        {
-            Log("No device token found and/or incorrect experiment duration specified.");
-            return;
-        }
-
-        new NotificationGenerator(strDeviceToken, expDurationS).run();
     }
 
     private static String getDeviceToken(String strDevice) throws FileNotFoundException
@@ -208,24 +202,42 @@ public class NotificationGenerator {
     {
         Utilities.Log(objToLog);
     }
-}
 
-class NotificationInfo
-{
-    public String _strCategory;
-    public String _strPriority;
-    public double _dailyRate;
-    public double _probability;
-    public int _sendAttemptedCount;
-    public int _sendCompletedCount;
+    public static void main(String[] args) throws Exception {
+        String strDeviceId = "";
+        String strServer = "www.ekngine.com";
+        int expDurationS;
+        NotificationGenerator notGen;
 
-    NotificationInfo(String strCategory, String strPriority, double dailyRate)
-    {
-        _strCategory = strCategory;
-        _strPriority = strPriority;
-        _dailyRate = dailyRate;
-        _probability = 0.0;
-        _sendAttemptedCount = 0;
-        _sendCompletedCount = 0;
+        if (args.length < 2)
+        {
+            System.out.println("Usage: java NotificationGenerator <DeviceName> <Duration_hours>");
+            return;
+        }
+
+        strDeviceId = args[0];
+//        try {
+//            strDeviceId = getDeviceToken(args[0]);
+//            strDeviceId = args[0]);
+//        }
+//        catch (FileNotFoundException e)
+//        {
+//            Log(e);
+//        }
+
+        expDurationS = Integer.parseInt(args[1]) * 60 * 60;
+        if (strDeviceId.isEmpty() || expDurationS <= 0)
+        {
+            Log("No device token found and/or incorrect experiment duration specified.");
+            return;
+        }
+
+        if (args.length >= 3)
+            strServer = args[2];
+
+        System.out.println("Server: " + strServer + " Device: " + args[0]);
+
+        new NotificationGenerator(strServer, strDeviceId, expDurationS).run();
     }
+
 }
