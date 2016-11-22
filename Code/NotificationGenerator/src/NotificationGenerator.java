@@ -47,11 +47,11 @@ public class NotificationGenerator {
     String _strServer;
     int _expDurationS;
 
-    public NotificationGenerator(String strServer, String strDeviceId, int expDurationS) {
+    public NotificationGenerator(String strServer, String strDeviceId, int expDurationS, long seedRng) {
         _strServer = strServer;
         _strDeviceId = strDeviceId;
         _expDurationS = expDurationS;
-        _rng = new Random(System.currentTimeMillis());
+        _rng = new Random(seedRng);
         _rateSum = 0.0;
 
         for (int i = 0; i < _rgNotification.length; i++) {
@@ -208,10 +208,11 @@ public class NotificationGenerator {
         String strServer = "www.ekngine.com";
         int expDurationS;
         NotificationGenerator notGen;
+        long seedRng;
 
-        if (args.length < 2)
+        if (args.length < 3)
         {
-            System.out.println("Usage: java NotificationGenerator <DeviceName> <Duration_hours>");
+            System.out.println("Usage: java NotificationGenerator <DeviceName> <Duration_hours> <RNG_Seed> [<ServerName>]");
             return;
         }
 
@@ -232,12 +233,14 @@ public class NotificationGenerator {
             return;
         }
 
-        if (args.length >= 3)
-            strServer = args[2];
+        seedRng = Long.parseLong(args[1]);
 
-        System.out.println("Server: " + strServer + " Device: " + args[0]);
+        if (args.length >= 4)
+            strServer = args[3];
 
-        new NotificationGenerator(strServer, strDeviceId, expDurationS).run();
+        System.out.println("Device: " + args[0] + " / Duration(h): " + args[1]
+                + " / RNG Seed: " + args[2] + " / Server: " + strServer);
+
+        new NotificationGenerator(strServer, strDeviceId, expDurationS, seedRng).run();
     }
-
 }
