@@ -52,11 +52,11 @@ public class NotificationManager implements Runnable {
                 }
                 else
                 {
-                    Log("Notification dropped!! No connection available to " + msg._strRecipientToken);
+                    Log("Queued message dropped!! No connection available to " + msg._strRecipientToken);
                 }
             }
             catch (InterruptedException e) {
-                System.out.println(e);
+                Log(e);
             }
             catch (IOException e)
             {
@@ -67,15 +67,38 @@ public class NotificationManager implements Runnable {
 
     public void addConnection(String strRecipientToken, Socket sock)
     {
-        if (!strRecipientToken.isEmpty() && sock != null && !sock.isClosed())
+        if (!strRecipientToken.isEmpty() && sock != null && !sock.isClosed()) {
+            // Remove existing connection (if any) for the recipient.
+            // This will ensure a close() call on the socket that is now
+            // being discarded.
+            removeConnection(strRecipientToken);
+
             _connectionTable.put(strRecipientToken, sock);
+        }
     }
 
-    public void removeConnection(String strRecipientToken)
+    public void removeConnection(String strRecipientToken, Socket sock)
     {
+//
+//         Remove connection only if the mapped/stored socket
+//         matches the passed in socket. Otherwise, in a race case
+//         we may remove a valid socket. Here is an example scenario: Suppose
+//         one socket from the client is broken. Now the client starts up another
+//         socket. However, on the server side, the read exception on the former
+//         socket happens after the newer socket connection has been established.
+//         Now the new/valid socket is in the map, but the read exception in the
+//         read handler causes us to remove connection, which will remove the newer
+//         valid socket. To prevent this from happening, the caller of removeConnection
+//         must pass in a socket that he wants to be removed. This is checked against
+//         the stored socket. Only if a match happens, the socket is closed and removed.
+//
+
         if (strRecipientToken.isEmpty())
             return;
-        _connectionTable.remove(strRecipientToken);
+
+        if (_connectionTable.get(strRecipientToken) == sock) {
+            removeConnection(strRecipientToken);
+        }
     }
 
     public void queueMessage(String strRecipientToken, String strBody)
@@ -84,7 +107,19 @@ public class NotificationManager implements Runnable {
             _msgQueue.put(new Message(strRecipientToken, strBody));
         } catch (InterruptedException e)
         {
-            System.out.println(e);
+            Log(e);
+        }
+    }
+
+    private void removeConnection(String strRecipientToken)
+    {
+        assert !strRecipientToken.isEmpty();
+
+        Socket sock = _connectionTable.remove(strRecipientToken);
+        try {
+            sock.close();
+        } catch (IOException e) {
+            Log(e);
         }
     }
 
@@ -96,9 +131,8 @@ public class NotificationManager implements Runnable {
         }
         catch (IOException e)
         {
-            System.out.println(e);
+            Log(e);
         }
-
     }
 
     private void Log(Object objToLog) { Logger.Log(objToLog); }

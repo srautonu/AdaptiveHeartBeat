@@ -127,11 +127,11 @@ class ReadHandler implements Runnable
             try
             {
                 _sock.close();
+                _notifMgr.removeConnection(_strClient, _sock);
+
                 _sock = null;
                 _input = null;
 
-                if (!_strClient.isEmpty())
-                    _notifMgr.removeConnection(_strClient);
 
                 Log("Socket@" + _port + " closed.");
             }
