@@ -219,7 +219,6 @@ public class NotificationGenerator {
         strDeviceId = args[0];
 //        try {
 //            strDeviceId = getDeviceToken(args[0]);
-//            strDeviceId = args[0]);
 //        }
 //        catch (FileNotFoundException e)
 //        {
@@ -233,13 +232,13 @@ public class NotificationGenerator {
             return;
         }
 
-        seedRng = Long.parseLong(args[1]);
+        seedRng = Long.parseLong(args[2]);
 
         if (args.length >= 4)
             strServer = args[3];
 
-        System.out.println("Device: " + args[0] + " / Duration(h): " + args[1]
-                + " / RNG Seed: " + args[2] + " / Server: " + strServer);
+        System.out.println("Device: " + strDeviceId + " / Duration(h): " + expDurationS/3600
+                + " / RNG Seed: " + seedRng + " / Server: " + strServer);
 
         new NotificationGenerator(strServer, strDeviceId, expDurationS, seedRng).run();
     }
