@@ -19,7 +19,52 @@ public class Utilities {
     //
     // Return true means notification was sent to server successfully
     //
-    static boolean sendNotification2(
+    static boolean sendNotificationViaFCM(
+        String strPriority,
+        String strRecipientDevice,
+        String strCategory,
+        int notificationId
+        )
+    {
+        boolean fRet = false;
+
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
+        post.setHeader("Content-type", "application/json");
+        post.setHeader("Authorization", "key=AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ");
+
+        try {
+            JSONObject message = new JSONObject();
+            message.put("to", getDeviceToken(strRecipientDevice));
+            message.put("priority", strPriority);
+
+            JSONObject data = new JSONObject();
+            data.put("Category", strCategory);
+            data.put("NotificationId", notificationId);
+
+            message.put("data", data);
+            message.put("time_to_live", 0);
+            post.setEntity(new StringEntity(message.toString(), "UTF-8"));
+
+            //
+            // Start the HTTP call
+            //
+            Log("Sending notification> Category: " + strCategory + " NotificationId: " + notificationId);
+            HttpResponse response = client.execute(post);
+            Log(response.getStatusLine());
+
+            fRet = (200 == response.getStatusLine().getStatusCode());
+        } catch(JSONException | IOException e) {
+            Log(e);
+        }
+
+        return fRet;
+    }
+
+    //
+    // Return true means notification was sent to server successfully
+    //
+    static boolean sendNotificationViaCustomServer(
         String strServer,
         int port,
         String strRecipientDevice,
@@ -66,7 +111,7 @@ public class Utilities {
         return fRet;
     }
 
-    static String getDeviceToken(String strDevice) throws FileNotFoundException
+    static private String getDeviceToken(String strDevice) throws FileNotFoundException
     {
         String strLine;
         String strDeviceToken = "";

@@ -1,11 +1,3 @@
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
@@ -38,7 +30,7 @@ public class NotificationGenerator {
         new NotificationInfo("Messenger", "high", 27.5),
         new NotificationInfo("Mail", "normal", 8.7),
         new NotificationInfo("Social", "normal", 4.7),
-        new NotificationInfo("Calendar", "high", 4.0) // TODO: Review --> These notifications are mostly locally generated.
+        new NotificationInfo("Calendar", "normal", 4.0) // TODO: Review --> These notifications are mostly locally generated.
     };
 
     Random _rng;
@@ -96,16 +88,7 @@ public class NotificationGenerator {
                 Log(e);
             }
 
-            // Choose the notification type and send
-            int app = whichone();
-            sendNotification2(app);
-//            try {
-//                sendNotification(app);
-//            } catch (JSONException e) {
-//                Log(e);
-//            } catch (IOException e) {
-//                Log(e);
-//            }
+            sendNotification(getTargetApp());
         }
 
         Log("Experiment Ended.");
@@ -116,7 +99,7 @@ public class NotificationGenerator {
         }
     }
 
-    private int whichone() {
+    private int getTargetApp() {
         double prob = _rng.nextDouble();
         double probSum = 0;
         for(int i = 0; i < _rgNotification.length; i++) {
@@ -127,46 +110,23 @@ public class NotificationGenerator {
         return -1; // Invalid ! This should never happen
     }
 
-//    private void sendNotification(int appId) throws JSONException, IOException {
-//        HttpClient client = HttpClientBuilder.create().build();
-//        HttpPost post = new HttpPost("https://fcm.googleapis.com/fcm/send");
-//        post.setHeader("Content-type", "application/json");
-//        post.setHeader("Authorization", "key=AIzaSyCDLHCWASScdkcz9s_29UJyW6GQ4YQgVMQ");
-//
-//        JSONObject message = new JSONObject();
-//        message.put("to", _strDeviceToken);
-//        message.put("priority", _rgNotification[appId]._strPriority);
-//
-//        JSONObject data = new JSONObject();
-//        data.put("Category", _rgNotification[appId]._strCategory);
-//        data.put("NotificationId", _rgNotification[appId]._sendAttemptedCount++);
-//
-//        message.put("data", data);
-//        message.put("time_to_live", 0);
-//        post.setEntity(new StringEntity(message.toString(), "UTF-8"));
-//
-//        //
-//        // Start the HTTP call
-//        //
-//        Log("Sending notification> Category: " + _rgNotification[appId]._strCategory + " NotificationId: " + _rgNotification[appId]._sendAttemptedCount);
-//        HttpResponse response = client.execute(post);
-//        Log(response.getStatusLine());
-//
-//        if (200 == response.getStatusLine().getStatusCode())
-//        {
-//            _rgNotification[appId]._sendCompletedCount++;
-//        }
-//    }
 
-    private void sendNotification2(int appId) {
+    private void sendNotification(int appId) {
         _rgNotification[appId]._sendAttemptedCount++;
-        boolean fSuccess = Utilities.sendNotification2(
-                                _strServer,
-                                5229,
+//        boolean fSuccess = Utilities.sendNotificationViaCustomServer(
+//                                _strServer,
+//                                5229,
+//                                _strDeviceId,
+//                                _rgNotification[appId]._strCategory,
+//                                _rgNotification[appId]._sendAttemptedCount
+//                                );
+        boolean fSuccess = Utilities.sendNotificationViaFCM(
+                                _rgNotification[appId]._strPriority,
                                 _strDeviceId,
                                 _rgNotification[appId]._strCategory,
                                 _rgNotification[appId]._sendAttemptedCount
-                                );
+                        );
+
         if (fSuccess)
         {
             _rgNotification[appId]._sendCompletedCount++;
@@ -176,26 +136,6 @@ public class NotificationGenerator {
         {
             Log("FAILED.");
         }
-    }
-
-    private static String getDeviceToken(String strDevice) throws FileNotFoundException
-    {
-        String strLine;
-        String strDeviceToken = "";
-        String[] strTokens;
-
-        Scanner scanner = new Scanner(new FileInputStream("DeviceInfo.txt"));
-        while (scanner.hasNextLine()) {
-            strLine = scanner.nextLine();
-            strTokens = strLine.split(" ");
-            if (strTokens[0].equalsIgnoreCase(strDevice))
-            {
-                strDeviceToken = strTokens[1];
-                break;
-            }
-        }
-
-        return strDeviceToken;
     }
 
     private static void Log(Object objToLog)
@@ -217,13 +157,6 @@ public class NotificationGenerator {
         }
 
         strDeviceId = args[0];
-//        try {
-//            strDeviceId = getDeviceToken(args[0]);
-//        }
-//        catch (FileNotFoundException e)
-//        {
-//            Log(e);
-//        }
 
         expDurationS = Integer.parseInt(args[1]) * 60 * 60;
         if (strDeviceId.isEmpty() || expDurationS <= 0)
@@ -237,9 +170,10 @@ public class NotificationGenerator {
         if (args.length >= 4)
             strServer = args[3];
 
+//        System.out.println("Device: " + strDeviceId + " / Duration(h): " + expDurationS/3600
+//                + " / RNG Seed: " + seedRng + " / Server: " + strServer);
         System.out.println("Device: " + strDeviceId + " / Duration(h): " + expDurationS/3600
-                + " / RNG Seed: " + seedRng + " / Server: " + strServer);
-
+                + " / RNG Seed: " + seedRng);
         new NotificationGenerator(strServer, strDeviceId, expDurationS, seedRng).run();
     }
 }
