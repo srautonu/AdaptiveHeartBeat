@@ -60,35 +60,41 @@ public class NotificationGenerator {
     public void run() {
         Log("Experiment Started.");
 
-        long curTimeMS = System.currentTimeMillis();
-        long endTimeMS = curTimeMS + _expDurationS * 1000;
-
-        while(true) {
-            curTimeMS = System.currentTimeMillis();
-            long remainingTimeMS = (endTimeMS - curTimeMS);
-            if (remainingTimeMS <= 0) {
-                break;
-            }
-       
-            Log("Remaining time: " + Math.round(remainingTimeMS / (1000 * 60.0)) + " minutes.");
-            //
-            // Wait this amount of sec before sending the next
-            //
-            double waitTimeS = -(3600.0 / _rateSum) * Math.log(_rng.nextDouble());
-            if (waitTimeS * 1000 + curTimeMS > endTimeMS) {
-                Log("Next waiting time (" + Math.round(waitTimeS/60.0) + " minute(s)) is longer than remaining time.");
-                break;
-            }
-
-            Log("Waiting " + Math.round(waitTimeS/60.0) + " minute(s) before sending next notificatoin.");
-
-            try {
-                Thread.sleep((int) waitTimeS * 1000);
-            } catch (InterruptedException e) {
-                Log(e);
-            }
-
+        if (_expDurationS <= 0) {
             sendNotification(getTargetApp());
+        }
+        else {
+
+            long curTimeMS = System.currentTimeMillis();
+            long endTimeMS = curTimeMS + _expDurationS * 1000;
+
+            while (true) {
+                curTimeMS = System.currentTimeMillis();
+                long remainingTimeMS = (endTimeMS - curTimeMS);
+                if (remainingTimeMS <= 0) {
+                    break;
+                }
+
+                Log("Remaining time: " + Math.round(remainingTimeMS / (1000 * 60.0)) + " minutes.");
+                //
+                // Wait this amount of sec before sending the next
+                //
+                double waitTimeS = -(3600.0 / _rateSum) * Math.log(_rng.nextDouble());
+                if (waitTimeS * 1000 + curTimeMS > endTimeMS) {
+                    Log("Next waiting time (" + Math.round(waitTimeS / 60.0) + " minute(s)) is longer than remaining time.");
+                    break;
+                }
+
+                Log("Waiting " + Math.round(waitTimeS / 60.0) + " minute(s) before sending next notificatoin.");
+
+                try {
+                    Thread.sleep((int) waitTimeS * 1000);
+                } catch (InterruptedException e) {
+                    Log(e);
+                }
+
+                sendNotification(getTargetApp());
+            }
         }
 
         Log("Experiment Ended.");
@@ -113,19 +119,30 @@ public class NotificationGenerator {
 
     private void sendNotification(int appId) {
         _rgNotification[appId]._sendAttemptedCount++;
-//        boolean fSuccess = Utilities.sendNotificationViaCustomServer(
-//                                _strServer,
-//                                5229,
-//                                _strDeviceId,
-//                                _rgNotification[appId]._strCategory,
-//                                _rgNotification[appId]._sendAttemptedCount
-//                                );
-        boolean fSuccess = Utilities.sendNotificationViaFCM(
-                                _rgNotification[appId]._strPriority,
-                                _strDeviceId,
-                                _rgNotification[appId]._strCategory,
-                                _rgNotification[appId]._sendAttemptedCount
-                        );
+
+        boolean fSuccess = false;
+
+        if (_strServer.compareToIgnoreCase("FCM") != 0) {
+            if (_strServer.compareToIgnoreCase("CUSTOM") == 0) {
+                _strServer = "www.ekngine.com";
+            }
+
+            fSuccess = Utilities.sendNotificationViaCustomServer(
+                    _strServer,
+                    5229,
+                    _strDeviceId,
+                    _rgNotification[appId]._strCategory,
+                    _rgNotification[appId]._sendAttemptedCount
+            );
+        }
+        else {
+            fSuccess = Utilities.sendNotificationViaFCM(
+                    _rgNotification[appId]._strPriority,
+                    _strDeviceId,
+                    _rgNotification[appId]._strCategory,
+                    _rgNotification[appId]._sendAttemptedCount
+            );
+        }
 
         if (fSuccess)
         {
@@ -145,35 +162,26 @@ public class NotificationGenerator {
 
     public static void main(String[] args) throws Exception {
         String strDeviceId = "";
-        String strServer = "www.ekngine.com";
-        int expDurationS;
+        String strServer;
+        int expDurationS = 0;
         NotificationGenerator notGen;
-        long seedRng;
+        long seedRng = 0;
 
-        if (args.length < 3)
+        if (args.length < 2)
         {
-            System.out.println("Usage: java NotificationGenerator <DeviceName> <Duration_hours> <RNG_Seed> [<ServerName>]");
+            System.out.println("Usage: java NotificationGenerator <DeviceName> <ServerName> [<Duration_hours>] [<RNG_Seed>]");
             return;
         }
 
         strDeviceId = args[0];
-
-        expDurationS = Integer.parseInt(args[1]) * 60 * 60;
-        if (strDeviceId.isEmpty() || expDurationS <= 0)
-        {
-            Log("No device token found and/or incorrect experiment duration specified.");
-            return;
-        }
-
-        seedRng = Long.parseLong(args[2]);
-
+        strServer = args[1];
+        if (args.length >= 3)
+            expDurationS = Integer.parseInt(args[2]) * 60 * 60;
         if (args.length >= 4)
-            strServer = args[3];
+            seedRng = Long.parseLong(args[3]);
 
-//        System.out.println("Device: " + strDeviceId + " / Duration(h): " + expDurationS/3600
-//                + " / RNG Seed: " + seedRng + " / Server: " + strServer);
-        System.out.println("Device: " + strDeviceId + " / Duration(h): " + expDurationS/3600
-                + " / RNG Seed: " + seedRng);
+        System.out.println("Device: " + strDeviceId + " / Server: " + strServer
+                + " / Duration(h): " + expDurationS/3600 + " / RNG Seed: " + seedRng );
         new NotificationGenerator(strServer, strDeviceId, expDurationS, seedRng).run();
     }
 }
