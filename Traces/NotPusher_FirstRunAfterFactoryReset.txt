@@ -1,0 +1,105 @@
+D:\GCMAdaptiveHeartBeater\NotificationPusher>java NotificationGenerator HEQEP FCM 12 12
+Device: HEQEP / Server: FCM / Duration(h): 12 / RNG Seed: 12
+06/19/2017 11:55:05 PM - Experiment Started.
+06/19/2017 11:55:05 PM - Remaining time: 720 minutes.
+06/19/2017 11:55:05 PM - Waiting 10 minute(s) before sending next notificatoin.
+06/20/2017 12:05:10 AM - Sending notification> Category: Messenger NotificationId: 1
+06/20/2017 12:05:10 AM - HTTP/1.1 200 OK
+06/20/2017 12:05:10 AM - Successful.
+06/20/2017 12:05:10 AM - Remaining time: 710 minutes.
+06/20/2017 12:05:10 AM - Waiting 23 minute(s) before sending next notificatoin.
+06/20/2017 12:28:38 AM - Sending notification> Category: Calendar NotificationId: 1
+06/20/2017 12:28:39 AM - HTTP/1.1 200 OK
+06/20/2017 12:28:39 AM - Successful.
+06/20/2017 12:28:39 AM - Remaining time: 686 minutes.
+06/20/2017 12:28:39 AM - Waiting 103 minute(s) before sending next notificatoin.
+06/20/2017 2:11:49 AM - Sending notification> Category: Messenger NotificationId: 2
+06/20/2017 2:11:49 AM - HTTP/1.1 200 OK
+06/20/2017 2:11:49 AM - Successful.
+06/20/2017 2:11:49 AM - Remaining time: 583 minutes.
+06/20/2017 2:11:49 AM - Waiting 36 minute(s) before sending next notificatoin.
+06/20/2017 2:47:37 AM - Sending notification> Category: Messenger NotificationId: 3
+06/20/2017 2:47:37 AM - HTTP/1.1 200 OK
+06/20/2017 2:47:37 AM - Successful.
+06/20/2017 2:47:37 AM - Remaining time: 547 minutes.
+06/20/2017 2:47:37 AM - Waiting 12 minute(s) before sending next notificatoin.
+06/20/2017 2:59:16 AM - Sending notification> Category: Social NotificationId: 1
+06/20/2017 2:59:16 AM - HTTP/1.1 200 OK
+06/20/2017 2:59:16 AM - Successful.
+06/20/2017 2:59:16 AM - Remaining time: 536 minutes.
+06/20/2017 2:59:16 AM - Waiting 10 minute(s) before sending next notificatoin.
+06/20/2017 3:08:51 AM - Sending notification> Category: Mail NotificationId: 1
+06/20/2017 3:08:51 AM - HTTP/1.1 200 OK
+06/20/2017 3:08:51 AM - Successful.
+06/20/2017 3:08:51 AM - Remaining time: 526 minutes.
+06/20/2017 3:08:51 AM - Waiting 3 minute(s) before sending next notificatoin.
+06/20/2017 3:11:39 AM - Sending notification> Category: Social NotificationId: 2
+06/20/2017 3:11:39 AM - HTTP/1.1 200 OK
+06/20/2017 3:11:39 AM - Successful.
+06/20/2017 3:11:39 AM - Remaining time: 523 minutes.
+06/20/2017 3:11:39 AM - Waiting 31 minute(s) before sending next notificatoin.
+06/20/2017 3:42:53 AM - Sending notification> Category: Mail NotificationId: 2
+06/20/2017 3:42:53 AM - HTTP/1.1 200 OK
+06/20/2017 3:42:53 AM - Successful.
+06/20/2017 3:42:53 AM - Remaining time: 492 minutes.
+06/20/2017 3:42:53 AM - Waiting 8 minute(s) before sending next notificatoin.
+06/20/2017 3:51:17 AM - Sending notification> Category: Messenger NotificationId: 4
+06/20/2017 3:51:17 AM - HTTP/1.1 200 OK
+06/20/2017 3:51:17 AM - Successful.
+06/20/2017 3:51:17 AM - Remaining time: 484 minutes.
+06/20/2017 3:51:17 AM - Waiting 126 minute(s) before sending next notificatoin.
+06/20/2017 5:57:17 AM - Sending notification> Category: Messenger NotificationId: 5
+06/20/2017 5:57:17 AM - HTTP/1.1 200 OK
+06/20/2017 5:57:17 AM - Successful.
+06/20/2017 5:57:17 AM - Remaining time: 358 minutes.
+06/20/2017 5:57:17 AM - Waiting 26 minute(s) before sending next notificatoin.
+06/20/2017 6:23:30 AM - Sending notification> Category: Messenger NotificationId: 6
+06/20/2017 6:23:31 AM - HTTP/1.1 200 OK
+06/20/2017 6:23:31 AM - Successful.
+06/20/2017 6:23:31 AM - Remaining time: 332 minutes.
+06/20/2017 6:23:31 AM - Waiting 5 minute(s) before sending next notificatoin.
+06/20/2017 6:28:40 AM - Sending notification> Category: Messenger NotificationId: 7
+06/20/2017 6:28:40 AM - HTTP/1.1 200 OK
+06/20/2017 6:28:40 AM - Successful.
+06/20/2017 6:28:40 AM - Remaining time: 326 minutes.
+06/20/2017 6:28:40 AM - Waiting 2 minute(s) before sending next notificatoin.
+06/20/2017 6:30:44 AM - Sending notification> Category: Messenger NotificationId: 8
+06/20/2017 6:30:44 AM - HTTP/1.1 200 OK
+06/20/2017 6:30:44 AM - Successful.
+06/20/2017 6:30:44 AM - Remaining time: 324 minutes.
+06/20/2017 6:30:44 AM - Waiting 0 minute(s) before sending next notificatoin.
+06/20/2017 6:31:09 AM - Sending notification> Category: Mail NotificationId: 3
+06/20/2017 6:31:09 AM - HTTP/1.1 200 OK
+06/20/2017 6:31:09 AM - Successful.
+06/20/2017 6:31:09 AM - Remaining time: 324 minutes.
+06/20/2017 6:31:09 AM - Waiting 25 minute(s) before sending next notificatoin.
+06/20/2017 6:56:37 AM - Sending notification> Category: Messenger NotificationId: 9
+06/20/2017 6:56:37 AM - HTTP/1.1 200 OK
+06/20/2017 6:56:37 AM - Successful.
+06/20/2017 6:56:37 AM - Remaining time: 298 minutes.
+06/20/2017 6:56:37 AM - Waiting 11 minute(s) before sending next notificatoin.
+06/20/2017 7:07:19 AM - Sending notification> Category: Messenger NotificationId: 10
+06/20/2017 7:07:19 AM - HTTP/1.1 200 OK
+06/20/2017 7:07:19 AM - Successful.
+06/20/2017 7:07:19 AM - Remaining time: 288 minutes.
+06/20/2017 7:07:19 AM - Waiting 43 minute(s) before sending next notificatoin.
+06/20/2017 7:50:11 AM - Sending notification> Category: Messenger NotificationId: 11
+06/20/2017 7:50:11 AM - HTTP/1.1 200 OK
+06/20/2017 7:50:11 AM - Successful.
+06/20/2017 7:50:11 AM - Remaining time: 245 minutes.
+06/20/2017 7:50:11 AM - Waiting 100 minute(s) before sending next notificatoin.
+06/20/2017 9:30:16 AM - Sending notification> Category: Messenger NotificationId: 12
+06/20/2017 9:30:16 AM - HTTP/1.1 200 OK
+06/20/2017 9:30:16 AM - Successful.
+06/20/2017 9:30:16 AM - Remaining time: 145 minutes.
+06/20/2017 9:30:16 AM - Waiting 3 minute(s) before sending next notificatoin.
+06/20/2017 9:33:39 AM - Sending notification> Category: Messenger NotificationId: 13
+06/20/2017 9:33:39 AM - HTTP/1.1 200 OK
+06/20/2017 9:33:39 AM - Successful.
+06/20/2017 9:33:39 AM - Remaining time: 141 minutes.
+06/20/2017 9:33:39 AM - Next waiting time (156 minute(s)) is longer than remaining time.
+06/20/2017 9:33:39 AM - Experiment Ended.
+Messenger (13)
+Mail (3)
+Social (2)
+Calendar (1)
